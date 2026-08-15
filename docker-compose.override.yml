@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  backend:
+    ports:
+      - "8080:8080"
+    environment:
+      - APP_ENV=development
+    volumes:
+      - ./backend:/app
+    command: air -c .air.toml  # Hot reload with air (optional)
+
+  frontend:
+    build:
+      target: builder
+    volumes:
+      - ./frontend/src:/app/src
+    command: npm run dev -- --host 0.0.0.0 --port 3000
+
+  postgres:
+    ports:
+      - "5432:5432"
+
+  redis:
+    ports:
+      - "6379:6379"
