@@ -9,9 +9,9 @@ A production-grade secure web application for Kathmandu Valley that allows Hindu
 
 ### Prerequisites
 
-- **Go 1.24+** - [Download](https://go.dev/dl/)
-- **Node.js 20+** - [Download](https://nodejs.org/)
-- **Docker & Docker Compose** - [Download](https://docs.docker.com/get-docker/) (recommended for PostgreSQL/Redis)
+- **Docker Desktop / Docker Compose** - [Download](https://docs.docker.com/get-docker/)
+
+Go and Node.js are only needed if you want to run the backend/frontend directly without Docker.
 
 ### One-Click Setup
 
@@ -30,49 +30,58 @@ setup.bat
 chmod +x setup.sh && ./setup.sh
 ```
 
-### Manual Setup
+### Docker Setup
 
 ```bash
 # 1. Clone and enter the project
 cd bishal-puja-sewa
 
-# 2. Copy environment configuration
-cp backend/.env.example backend/.env
+# 2. Prepare env file, build containers, start services, and seed demo data
+./setup.sh
+```
 
-# 3. Start database services (PostgreSQL + Redis)
+Windows users can run `setup.bat` or `.\setup.ps1`.
+
+### Manual Docker Commands
+
+```bash
+cp .env.example .env
+docker compose up -d --build
+docker compose run --rm seed
+```
+
+### Local Development Without Docker
+
+```bash
+# Terminal 1: start Postgres/Redis only
 docker compose up -d postgres redis
 
-# 4. Start backend (Terminal 1)
+# Terminal 2: backend
 cd backend
+cp .env.example .env
 go mod download
 go run ./cmd/main.go
 
-# 5. Start frontend (Terminal 2)
+# Terminal 3: frontend
 cd frontend
 npm install
 npm run dev
 ```
 
-### Using Docker (Full Stack)
-
-```bash
-docker compose up -d
-```
-
 Access:
 - **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8080
-- **Health Check**: http://localhost:8080/health
+- **Backend API**: http://localhost:8081
+- **Health Check**: http://localhost:8081/health
 
 ## 📋 Default Credentials
 
 | Role | Email | Password |
 |------|-------|----------|
 | Admin | admin@bishalpujasewa.com | AdminPass123! |
-| Pandit | pandit.ram@example.com | PanditPass123! |
+| Pandit | pandit.atri@example.com | PanditPass123! |
 | Customer | customer@example.com | CustomerPass123! |
 
-> Run `go run ./backend/scripts/seed.go` to seed the database with sample data.
+The setup scripts and `docker compose run --rm seed` create these accounts plus sample pandits, categories, and rituals.
 
 ## 🏗 Architecture
 
